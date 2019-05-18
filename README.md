@@ -1,23 +1,8 @@
-# study_nodejs
-Do it! Node Js Study
+### 4장 Node의 기본기능 알아보기
+학습목표 : 이벤트가 무엇인지 알아보자
+1. 주소 문자열과 요청 파라미터 다루기
+주소 문자열을 다루기 위해 노드의 기본 모듈인 'url 모듈' 사용
+url 모듈을 이용해 주소 문자열을 객체로 만들면, 정보를 나누어 객체의 속성으로 보관
+ex) 요청 프로토콜이 http, https 인지 구별하려면 url 객체가 가지고있는 속성 값을 확인하면 됌
 
-
-##2장  Node Module
-Module : 별도의 파일로분리된 독립 기능의 모음<br>
-함수를 여러개로 나누어 필요할때 가져와 사용하면 재사용 할 수 있다.<br>
-노드에서는 모듈이라는 단위로 별도의 파일을 만들어 필요한 파일에서 불러와서 사용 할 수 있다.
-이 과정에서 exports 전역 객체 사용
-모듈을 불러올 때 require() 메소드를 사용하며, 파라미터로 파일의 이름을 사용
-
-외장 모듈 사용 (node_modules)<br>
-npm install {package} : 모듈 설치 (--save 사용하여 package.json 추가 가능)<br>
-npm init : npm package 관리를 위한 package.json 파일 생성<br>
-
-[tip]다른 프로젝트에서 모듈 사용을 원한다면 package.json 파일을 옮긴 후 npm install
-그럼 dependencies 속성값을 참조하여 패키지 설치
-
-내장 모듈<br>
-시스탬 정보를 알려주는 os 모듈
-
-### 3장 JavaScript와 친해지기
 
