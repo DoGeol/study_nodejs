@@ -19,3 +19,5 @@ npm init : npm package 관리를 위한 package.json 파일 생성<br>
 내장 모듈<br>
 시스탬 정보를 알려주는 os 모듈
 
+### 3장 JavaScript와 친해지기
+
