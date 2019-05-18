@@ -2,7 +2,7 @@
   "name": "node",
   "version": "1.0.0",
   "description": "",
-  "main": "ch01_test0.js",
+  "main": "study_day1/ch01_test0.js",
   "dependencies": {
     "nconf": "^0.10.0"
   },
