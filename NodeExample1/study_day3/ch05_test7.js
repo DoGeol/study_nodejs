@@ -1,0 +1,23 @@
+var http = require('http');
+
+var options = {
+    host : 'www.google.com',
+    post : 80,
+    path : '/'
+};
+
+var req = http.get(options, function (res) {
+    // 응답 처리
+    var resData = '';
+    res.on('data', function (chunk) {
+        resData += chunk;
+    });
+
+    res.on('end', function () {
+        console.log(resData);
+    });
+});
+
+req.on('error', function (err) {
+    console.log("Error 발생 : ", err.message);
+});
