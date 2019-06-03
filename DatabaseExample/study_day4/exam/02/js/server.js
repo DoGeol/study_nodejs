@@ -20,8 +20,8 @@ var mysql               = require( 'mysql' );
 var pool                = mysql.createPool( {
                                                 connectionLimit : 10,
                                                 host            : 'localhost',
-                                                user            : '',
-                                                password        : '',
+                                                user            : 'hivelab',
+                                                password        : 'hivelab',
                                                 database        : 'node_test',
                                                 debug           : false
                                             } );
@@ -53,6 +53,51 @@ var upload  = multer( {
                           }
                       } );
 var router  = express.Router();
+
+router.route('/process/memo').get( function ( req, res ) {
+    console.log('get Memo 실행');
+    var paramName = req.body.name || req.query.name;
+    if (pool) {
+        getMemo(paramName,function ( err, rows ) {
+            if ( err ) {
+                console.error( '사용자 로그인 중 오류 발생 : ', err.stack );
+                res.writeHead( 200, { 'Content-Type' : 'text/html;charset=utf-8' } );
+                res.write( '<h1>사용자 로그인 중 오류 발생</h1>' );
+                res.write( '<p>' + err.stack + '</p>' );
+                res.end();
+                return;
+            }
+            if ( rows ) {
+                console.dir(rows);
+                var db_data_name = rows[0].name;
+                var db_data_date = rows[0].date;
+                var db_data_memo = rows[0].memo;
+                var db_data_image_path = rows[0].image_path;
+
+                res.writeHead( 200, { 'Content-Type' : 'text/html;charset=utf-8' } );
+                res.write( '<h1>가져오기 성공</h1>' );
+                res.write( '<div><p>작성자 : ' + db_data_name + '</p></div>' );
+                res.write( '<div><p>작성일 : ' + db_data_date + '</p></div>' );
+                res.write( '<div><p>메모 : ' + db_data_memo + '</p></div>' );
+                res.write( '<div><p>서버에 저장된 사진</p>' +
+                           '<img src="' + db_data_image_path + '" width="300" height="300">' +
+                           '<p>이미지 경로 : ' + db_data_image_path + '</p></div>' );
+                res.end();
+            } else {
+                res.writeHead( 200, { 'Content-Type' : 'text/html;charset=utf-8' } );
+                res.write( '<h1 style="color : red;"> 가져오기 실패</h1>' );
+                res.end();
+            }
+        })
+    } else {
+        res.writeHead( 200, { 'Content-Type' : 'text/html;charset=utf-8' } );
+        res.write( '<h1>Database 연결 실패</h1>' );
+        res.write( '<div><p>연결 못했쑴</p></div>' );
+        res.end();
+    }
+
+});
+
 router.route( '/process/memo' ).post( upload.array( 'photo', 1 ), function ( req, res ) {
     console.log( '메모 저장 실행' );
     try {
@@ -98,6 +143,7 @@ router.route( '/process/memo' ).post( upload.array( 'photo', 1 ), function ( req
                                '<img src="' + serverURL + files[ 0 ].path + '" width="300" height="300">' +
                                '<p>이미지 경로 : ' + serverURL + files[ 0 ].path + '</p></div>' );
                     res.write( '<br><br><a href="/memo.html">다시 작성</a>' );
+                    res.write( '<br><br><a href="/getMemo.html">메모 가져오기</a>' );
                     res.end();
                 } else {
                     res.writeHead( 200, { 'Content-Type' : 'text/html;charset=utf-8' } );
@@ -143,6 +189,32 @@ var saveMemo = function ( name, date, memo, imagePath, callback ) {
         } );
     } );
 };
+
+var getMemo = function ( name, callback) {
+    pool.getConnection( function ( err, conn ) {
+        if ( err ) {
+            if ( conn ) {
+                conn.release();
+            }
+            callback( err, null );
+            return;
+        }
+        var columns   = [ 'name', 'date', 'memo', 'image_path' ];
+        var tableName = 'image_save_test'
+        var exec = conn.query( 'select ?? from ?? where name = ?',
+                               [ columns, tableName, name ], function ( err, rows ) {
+                conn.release();
+                console.log( '실행 대상 SQL : ', exec.sql );
+                if ( rows.length > 0 ) {
+                    console.log( '가져온 값 : ',  rows );
+                    callback( null, rows );
+                } else {
+                    console.log( '일치하는 사용자를 찾지 못함' );
+                    callback( null, null );
+                }
+            } );
+    });
+}
 // express server start
 http.createServer( app ).listen( app.get( 'port' ), function () {
     console.log( 'express server started : ', app.get( 'port' ) );

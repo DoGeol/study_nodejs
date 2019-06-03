@@ -134,7 +134,7 @@ var authUser = function ( id, pw, callback ) {
         var columns   = [ 'id', 'name', 'age' ];
         var tableName = 'users';
         var exec = conn.query( 'select ?? from ?? where id = ? and password = ?',
-                               [ columns, tableName, id, pw ], function ( err, rows ) {
+                                        [ columns, tableName, id, pw ], function ( err, rows ) {
                 conn.release();
                 console.log( '실행 대상 SQL : ', exec.sql );
                 if ( rows.length > 0 ) {
